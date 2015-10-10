@@ -1,7 +1,5 @@
 package com.dreammist.popularmovies_stage1;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,7 +33,7 @@ public class FragmentMain extends Fragment {
 
         // Get the gridview and set the adapter to either ImageAdapter or ArrayAdapter (with image)
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
-        gridView.setAdapter(mPosterAdapter);
+        gridView.setAdapter(new ImageAdapter(rootView.getContext()));
 
         return rootView;
     }
