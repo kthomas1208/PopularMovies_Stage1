@@ -19,10 +19,20 @@ public class ImageAdapter<T> extends BaseAdapter {
      */
     private List<T> mObjects;
 
+    /**
+     * Lock used to modify the content of {@link #mObjects}. Any write operation
+     * performed on the array should be synchronized on this lock. This lock is also
+     * used by the filter (see {@link #getFilter()} to make a synchronized copy of
+     * the original array of data.
+     */
+    private final Object mLock = new Object();
+
     private Context mContext;
 
     public ImageAdapter(Context c) {
         mContext = c;
+        for (String string : dummyStrings)
+            this.add(string);
     }
 
     public ImageAdapter(Context c, Integer[] i) {
@@ -39,8 +49,15 @@ public class ImageAdapter<T> extends BaseAdapter {
         mObjects.add(object);
     }
 
+    /**
+     * Remove all elements from the list.
+     */
+    public void clear() {
+        mObjects.clear();
+    }
+
     public int getCount() {
-        return dummyStrings.length;
+        return mObjects.size();
     }
 
     public Object getItem(int position) {
@@ -71,7 +88,8 @@ public class ImageAdapter<T> extends BaseAdapter {
 
         final String path = "http://image.tmdb.org/t/p/w185/";
         //String url = path + getItem(position).toString();
-        String url = path + dummyStrings[position];
+        //String url = path + dummyStrings[position];
+        String url = path + getItem(position);
 
         // TODO: 10/12/15 use grid_item_poster instead  
 
