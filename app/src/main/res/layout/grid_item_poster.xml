@@ -3,5 +3,7 @@
     android:id="@+id/grid_item_poster_imageview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scaleType="centerCrop">
+    android:adjustViewBounds="true">
+
 </ImageView>
+    <!--android:scaleType="centerCrop"-->
