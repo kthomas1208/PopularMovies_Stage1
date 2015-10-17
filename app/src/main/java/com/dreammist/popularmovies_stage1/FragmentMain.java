@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class FragmentMain extends Fragment {
 
@@ -34,16 +35,16 @@ public class FragmentMain extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-//        mPosterAdapter = new ArrayAdapter<String>(
-//                getActivity(),                      //Context
-//                R.layout.grid_item_poster,          //ID of image layout
-//                R.id.grid_item_poster_imageview,    //ID of ImageView
-//                new ArrayList<String>());           //list of data (initially blank)
+        mPosterAdapter = new ImageAdapter(
+                getActivity(),                      //Context
+                R.layout.grid_item_poster,          //ID of image layout
+                //R.id.grid_item_poster_imageview,    //ID of ImageView
+                new ArrayList<String>());           //list of data (initially blank)
 
-       mPosterAdapter = new ImageAdapter<>(rootView.getContext());
+       //mPosterAdapter = new ImageAdapter<>(rootView.getContext());
         // Get the gridview and set the adapter to either ImageAdapter or ArrayAdapter (with image)
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
-        gridView.setAdapter(new ImageAdapter(rootView.getContext()));
+        gridView.setAdapter(mPosterAdapter);
 
         // TODO: 10/12/15 create method to parse JSON
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
@@ -143,8 +144,6 @@ public class FragmentMain extends Fragment {
                 Log.v(LOG_TAG, e.getMessage(), e);
                 return null;
             }
-
-
         }
 
         @Override
