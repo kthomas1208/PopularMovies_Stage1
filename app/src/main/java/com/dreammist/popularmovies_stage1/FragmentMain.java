@@ -41,12 +41,10 @@ public class FragmentMain extends Fragment {
                 //R.id.grid_item_poster_imageview,    //ID of ImageView
                 new ArrayList<String>());           //list of data (initially blank)
 
-       //mPosterAdapter = new ImageAdapter<>(rootView.getContext());
         // Get the gridview and set the adapter to either ImageAdapter or ArrayAdapter (with image)
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
         gridView.setAdapter(mPosterAdapter);
 
-        // TODO: 10/12/15 create method to parse JSON
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
         fetchMoviesTask.execute();
 
