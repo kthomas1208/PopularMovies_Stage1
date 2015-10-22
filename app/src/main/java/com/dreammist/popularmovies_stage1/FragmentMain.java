@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -31,6 +34,36 @@ public class FragmentMain extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragmentmain, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.sort) {
+            updateMovies();
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    private void updateMovies(){
+        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
+
+        String sortPreference = "popularity.desc";
+        fetchMoviesTask.execute(sortPreference);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -45,29 +78,28 @@ public class FragmentMain extends Fragment {
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
         gridView.setAdapter(mPosterAdapter);
 
-        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        fetchMoviesTask.execute();
+        updateMovies();
 
         return rootView;
     }
 
-    public class FetchMoviesTask extends AsyncTask<Void, Void, String[]> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         @Override
-        protected String[] doInBackground(Void... params) {
+        protected String[] doInBackground(String... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-
+            String sortPreference = params[0];
             // Will contain the raw JSON response as a string
             String moviesJsonStr = null;
 
             final String SORT_PARAM = "sort_by";
             final String API_PARAM = "api_key";
-
-            String sort = "popularity.desc";
+            String sort = sortPreference;
+            //sort = "vote_average.desc";
             String apiKey = "";
 
             try {
