@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,10 +30,8 @@ public class FragmentMain extends Fragment {
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
     ImageAdapter mPosterAdapter;
-    Toast mToast;
-    public FragmentMain() {
-        // Required empty public constructor
-    }
+
+    public FragmentMain() {}
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -79,12 +76,6 @@ public class FragmentMain extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
                 startActivity(intent);
-
-                if(mToast != null)
-                    mToast.cancel();
-                mToast = Toast.makeText(parent.getContext(), Integer.toString(position), Toast.LENGTH_SHORT);
-                mToast.show();
-
             }
         });
 
