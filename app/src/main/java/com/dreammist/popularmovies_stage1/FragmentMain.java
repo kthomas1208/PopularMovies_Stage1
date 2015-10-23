@@ -1,17 +1,18 @@
 package com.dreammist.popularmovies_stage1;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,8 +28,10 @@ import java.util.ArrayList;
 
 public class FragmentMain extends Fragment {
 
-    ImageAdapter mPosterAdapter;
+    private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
+    ImageAdapter mPosterAdapter;
+    Toast mToast;
     public FragmentMain() {
         // Required empty public constructor
     }
@@ -38,12 +41,6 @@ public class FragmentMain extends Fragment {
         super.onCreate(savedInstance);
 
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragmentmain, menu);
     }
 
     @Override
@@ -71,12 +68,25 @@ public class FragmentMain extends Fragment {
         mPosterAdapter = new ImageAdapter(
                 getActivity(),                      //Context
                 R.layout.grid_item_poster,          //ID of image layout
-                //R.id.grid_item_poster_imageview,    //ID of ImageView
                 new ArrayList<String>());           //list of data (initially blank)
 
         // Get the gridview and set the adapter to either ImageAdapter or ArrayAdapter (with image)
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
         gridView.setAdapter(mPosterAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                startActivity(intent);
+
+                if(mToast != null)
+                    mToast.cancel();
+                mToast = Toast.makeText(parent.getContext(), Integer.toString(position), Toast.LENGTH_SHORT);
+                mToast.show();
+
+            }
+        });
 
         updateMovies();
 
