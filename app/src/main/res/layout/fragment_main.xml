@@ -4,18 +4,14 @@
     android:layout_height="match_parent"
     tools:context="com.dreammist.popularmovies_stage1.FragmentMain">
 
-    <!-- TODO: Update blank fragment layout -->
-    <!--<TextView android:layout_width="match_parent" android:layout_height="match_parent"-->
-        <!--android:text="@string/hello_blank_fragment" />-->
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="90dp"
-        android:numColumns="auto_fit"
-        android:stretchMode="columnWidth"
         android:gravity="center"
-        />
-
-
+        android:verticalSpacing="0dp"
+        android:horizontalSpacing="0dp"
+        android:numColumns="auto_fit"
+        android:columnWidth="150dp"
+        android:stretchMode="columnWidth" />
 </FrameLayout>

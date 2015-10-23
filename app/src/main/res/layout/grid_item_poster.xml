@@ -2,9 +2,7 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/grid_item_poster_imageview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <!--list_item_forecast_textview-->
-
+    android:layout_height="match_parent"
+    android:adjustViewBounds="true"
+    android:padding="0dp">
 </ImageView>
