@@ -74,7 +74,9 @@ public class FragmentMain extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String posterURL = (String) mPosterAdapter.getItem(position);
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, posterURL);
                 startActivity(intent);
             }
         });
