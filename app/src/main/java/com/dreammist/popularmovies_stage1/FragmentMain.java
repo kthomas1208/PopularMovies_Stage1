@@ -196,6 +196,13 @@ public class FragmentMain extends Fragment {
 
             for(int i=0; i < resultsArray.length(); i++) {
                 results[i] = resultsArray.getJSONObject(i).getString("poster_path");
+                String overview  = resultsArray.getJSONObject(i).getString("overview");
+                String releaseDate = resultsArray.getJSONObject(i).getString("release_date");
+                String posterPath = resultsArray.getJSONObject(i).getString("poster_path");
+                String title = resultsArray.getJSONObject(i).getString("title");
+                double voteAverage = resultsArray.getJSONObject(i).getDouble("vote_average");
+
+                Movie movie = new Movie(overview, releaseDate, posterPath, title, voteAverage);
             }
 
             if(results != null)
