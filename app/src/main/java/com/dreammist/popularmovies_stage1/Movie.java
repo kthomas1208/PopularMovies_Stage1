@@ -9,11 +9,19 @@ import android.os.Parcelable;
 public class Movie implements Parcelable{
     String overview;
     String releaseDate;
-    String posterPath;
+    private String posterPath;
     String title;
-    double voteAverage;
+    float voteAverage;
 
-    public Movie(String overview, String releaseDate, String posterPath, String title, double voteAverage) {
+    public Movie() {
+        this.overview = "";
+        this.releaseDate = "";
+        this.posterPath = "";
+        this.title = "";
+        this.voteAverage = 0;
+    }
+
+    public Movie(String overview, String releaseDate, String posterPath, String title, float voteAverage) {
         this.overview = overview;
         this.releaseDate = releaseDate;
         this.posterPath = posterPath;
@@ -26,8 +34,10 @@ public class Movie implements Parcelable{
         this.releaseDate = in.readString();
         this.posterPath = in.readString();
         this.title = in.readString();
-        this.voteAverage = in.readDouble();
+        this.voteAverage = in.readFloat();
     }
+
+    public String getPosterPath() { return posterPath; }
 
     @Override
     public int describeContents() {
@@ -40,10 +50,10 @@ public class Movie implements Parcelable{
         parcel.writeString(releaseDate);
         parcel.writeString(posterPath);
         parcel.writeString(title);
-        parcel.writeDouble(voteAverage);
+        parcel.writeFloat(voteAverage);
     }
 
-    public final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
         @Override
         public Movie createFromParcel(Parcel parcel) {
             return new Movie(parcel);

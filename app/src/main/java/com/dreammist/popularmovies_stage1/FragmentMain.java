@@ -65,7 +65,7 @@ public class FragmentMain extends Fragment {
         mPosterAdapter = new ImageAdapter(
                 getActivity(),                      //Context
                 R.layout.grid_item_poster,          //ID of image layout
-                new ArrayList<String>());           //list of data (initially blank)
+                new ArrayList<Movie>());            //list of data (initially blank)
 
         // Get the gridview and set the adapter to either ImageAdapter or ArrayAdapter (with image)
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
@@ -74,9 +74,11 @@ public class FragmentMain extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String posterURL = (String) mPosterAdapter.getItem(position);
+                Movie movie = (Movie) mPosterAdapter.getItem(position);
+                //String posterURL = ((Movie)mPosterAdapter.getItem(position)).getPosterPath();
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, posterURL);
+                //intent.putExtra(Intent.EXTRA_TEXT, posterURL);
+                intent.putExtra("com.dreammist.popularmovies_stage1.Movie", movie);
                 startActivity(intent);
             }
         });
@@ -86,12 +88,12 @@ public class FragmentMain extends Fragment {
         return rootView;
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected Movie[] doInBackground(String... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -170,8 +172,8 @@ public class FragmentMain extends Fragment {
 
             // Parse through JSON and return relevant data
             try {
-                String[] strings = getMovieDataFromJSON(moviesJsonStr);
-                return strings;
+                Movie[] movies = getMovieDataFromJSON(moviesJsonStr);
+                return movies;
             }
             catch (JSONException e) {
                 Log.v(LOG_TAG, e.getMessage(), e);
@@ -180,34 +182,34 @@ public class FragmentMain extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String[] strings) {
-            if(strings != null) {
+        protected void onPostExecute(Movie[] movies) {
+            if(movies != null) {
                 mPosterAdapter.clear();         // clear any previous data
-                for(String string : strings) {
-                    mPosterAdapter.add(string); // add new data
+                for(Movie movie : movies) {
+                    mPosterAdapter.add(movie); // add new data
                 }
             }
         }
 
-        private String[] getMovieDataFromJSON(String moviesJsonStr) throws JSONException {
+        private Movie[] getMovieDataFromJSON(String moviesJsonStr) throws JSONException {
             JSONObject moviesJSON = new JSONObject(moviesJsonStr);
             JSONArray resultsArray = moviesJSON.getJSONArray("results");
             String[] results = new String[resultsArray.length()];
+            Movie[] movies = new Movie[resultsArray.length()];
 
             for(int i=0; i < resultsArray.length(); i++) {
                 results[i] = resultsArray.getJSONObject(i).getString("poster_path");
+
                 String overview  = resultsArray.getJSONObject(i).getString("overview");
                 String releaseDate = resultsArray.getJSONObject(i).getString("release_date");
                 String posterPath = resultsArray.getJSONObject(i).getString("poster_path");
                 String title = resultsArray.getJSONObject(i).getString("title");
-                double voteAverage = resultsArray.getJSONObject(i).getDouble("vote_average");
+                float voteAverage = (float)resultsArray.getJSONObject(i).getDouble("vote_average");
 
-                Movie movie = new Movie(overview, releaseDate, posterPath, title, voteAverage);
+                movies[i] = new Movie(overview, releaseDate, posterPath, title, voteAverage);
             }
 
-            if(results != null)
-                return results;
-            else return new String[0];
+            return movies;
         }
     }
 }

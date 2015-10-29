@@ -35,7 +35,7 @@ public class ImageAdapter extends ArrayAdapter {
         }
 
         final String path = "http://image.tmdb.org/t/p/w185/";
-        String url = path + getItem(position);
+        String url = path + ((Movie)getItem(position)).getPosterPath();
 
         // Load the image into the ImageView using Picasso
         Picasso.with(parent.getContext()).load(url).into((ImageView) view);
