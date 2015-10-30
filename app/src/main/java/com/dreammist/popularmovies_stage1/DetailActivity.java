@@ -55,7 +55,7 @@ public class DetailActivity extends AppCompatActivity {
                 // Year
                 TextView year = (TextView) rootview.findViewById(R.id.movie_year);
                 String releaseDate = movie.releaseDate;
-                year.setText(releaseDate);
+                if (!releaseDate.isEmpty()) year.setText(releaseDate);
 
                 // Rating
                 RatingBar rating = (RatingBar) rootview.findViewById(R.id.ratingBar);

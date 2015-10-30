@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Movie Title Here"
+        android:text=""
         android:id="@+id/movie_title"
         android:layout_gravity="center_horizontal"
         android:height="50dp"
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="2014"
+        android:text=""
         android:id="@+id/movie_year"
         android:layout_gravity="center_horizontal" />
 
@@ -39,13 +39,13 @@
         android:id="@+id/ratingBar"
         android:layout_gravity="center_horizontal"
         android:isIndicator="true"
-        android:rating="4.5" />
+        android:rating="0" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Movie's plot description goes here. Something about the epic blockbuster hit of the year and how mindblowing it's going to be but it's going to be another flop why did people spend money to see some of this crap but Interstellar was pretty lit."
+        android:text=""
         android:id="@+id/movie_description"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="35dp"

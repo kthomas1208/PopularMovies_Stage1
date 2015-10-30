@@ -2,4 +2,7 @@
     <string name="app_name">Popular Movies - Stage 1</string>
 
     <string name="sort_by">Sort by...</string>
+    <string name="close">close</string>
+    <string name="sort_key">sort</string>
+    <string name="sort_default">popularity.desc</string>
 </resources>

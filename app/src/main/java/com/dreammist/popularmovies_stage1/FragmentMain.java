@@ -1,6 +1,10 @@
 package com.dreammist.popularmovies_stage1;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +34,8 @@ public class FragmentMain extends Fragment {
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
     ImageAdapter mPosterAdapter;
+    final String[] mSortPreferences = {"popularity.desc","vote_average.desc"};
+    //private String mSortPreference = "popularity.desc";
 
     public FragmentMain() {}
 
@@ -43,17 +49,47 @@ public class FragmentMain extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
         if(id == R.id.sort) {
-            updateMovies();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Sort");
+
+            // TODO: 10/29/15 fix default selection
+            builder.setSingleChoiceItems(R.array.sort_preferences, -1,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Save sort order as a SharedPreference
+                            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(getString(R.string.sort_key), mSortPreferences[which]);
+                            editor.commit();
+                            Log.v(LOG_TAG, "ONCLICK - mSortPreferences: " + mSortPreferences[which]);
+                        }
+                    });
+
+            builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    updateMovies();
+                }
+            });
+
+            // Create the AlertDialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
         return super.onOptionsItemSelected(item);
-
     }
 
     private void updateMovies(){
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
 
-        String sortPreference = "popularity.desc";
+        // Get the sort order set by the user by getting the SharedPreferences
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String sortPreference = sharedPref.getString(getString(R.string.sort_key),
+                getString(R.string.sort_default));
+        Log.v(LOG_TAG, "sortPreference: " + sortPreference);
         fetchMoviesTask.execute(sortPreference);
     }
 
@@ -75,9 +111,7 @@ public class FragmentMain extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Movie movie = (Movie) mPosterAdapter.getItem(position);
-                //String posterURL = ((Movie)mPosterAdapter.getItem(position)).getPosterPath();
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
-                //intent.putExtra(Intent.EXTRA_TEXT, posterURL);
                 intent.putExtra("com.dreammist.popularmovies_stage1.Movie", movie);
                 startActivity(intent);
             }
@@ -186,7 +220,7 @@ public class FragmentMain extends Fragment {
             if(movies != null) {
                 mPosterAdapter.clear();         // clear any previous data
                 for(Movie movie : movies) {
-                    mPosterAdapter.add(movie); // add new data
+                    mPosterAdapter.add(movie);  // add new data
                 }
             }
         }
@@ -194,12 +228,9 @@ public class FragmentMain extends Fragment {
         private Movie[] getMovieDataFromJSON(String moviesJsonStr) throws JSONException {
             JSONObject moviesJSON = new JSONObject(moviesJsonStr);
             JSONArray resultsArray = moviesJSON.getJSONArray("results");
-            String[] results = new String[resultsArray.length()];
             Movie[] movies = new Movie[resultsArray.length()];
 
             for(int i=0; i < resultsArray.length(); i++) {
-                results[i] = resultsArray.getJSONObject(i).getString("poster_path");
-
                 String overview  = resultsArray.getJSONObject(i).getString("overview");
                 String releaseDate = resultsArray.getJSONObject(i).getString("release_date");
                 String posterPath = resultsArray.getJSONObject(i).getString("poster_path");
