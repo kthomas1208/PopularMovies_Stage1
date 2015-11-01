@@ -6,8 +6,8 @@
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="wrap_content"
@@ -18,7 +18,8 @@
             android:gravity="center_vertical"
             android:textSize="40sp"
             android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp" />
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="10dp"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -27,12 +28,13 @@
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
             tools:src="@drawable/interstellar"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="5dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text=""
             android:id="@+id/movie_year"
             android:layout_gravity="center_horizontal" />
@@ -48,12 +50,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             tools:text=""
             android:id="@+id/movie_description"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="35dp"
-            android:layout_marginRight="35dp" />
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp" />
 
 </LinearLayout>
 </ScrollView>
