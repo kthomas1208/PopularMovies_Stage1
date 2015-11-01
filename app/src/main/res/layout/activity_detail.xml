@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.dreammist.popularmovies_stage1.DetailActivity"
-    android:id="@+id/detail_container"
-    android:nestedScrollingEnabled="true">
+    android:id="@+id/detail_container">
 
 </FrameLayout>
