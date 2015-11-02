@@ -92,7 +92,9 @@ public class DetailActivity extends AppCompatActivity {
 
                 // Description
                 TextView description = (TextView) rootview.findViewById(R.id.movie_description);
-                description.setText(movie.overview);
+                String overViewText = movie.overview;
+                if(overViewText.equalsIgnoreCase("null")) overViewText = "No overview found";
+                description.setText(overViewText);
             }
 
             return rootview;
