@@ -35,7 +35,7 @@ public class FragmentMain extends Fragment {
 
     ImageAdapter mPosterAdapter;
     final String[] mSortPreferences = {"popularity.desc","vote_average.desc"};
-    //private String mSortPreference = "popularity.desc";
+    AlertDialog mSortDialog;
 
     public FragmentMain() {}
 
@@ -44,6 +44,31 @@ public class FragmentMain extends Fragment {
         super.onCreate(savedInstance);
 
         setHasOptionsMenu(true);
+
+        // Create dialog for changing sort option
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Sort");
+
+        builder.setSingleChoiceItems(R.array.sort_preferences, 0,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Save sort order as a SharedPreference
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(getString(R.string.sort_key), mSortPreferences[which]);
+                        editor.commit();
+                    }
+                });
+
+        builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                updateMovies();
+            }
+        });
+
+        // Create the AlertDialog
+        mSortDialog = builder.create();
     }
 
     @Override
@@ -51,32 +76,7 @@ public class FragmentMain extends Fragment {
         int id = item.getItemId();
 
         if(id == R.id.sort) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Sort");
-
-            // TODO: 10/29/15 fix default selection
-            builder.setSingleChoiceItems(R.array.sort_preferences, -1,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Save sort order as a SharedPreference
-                            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putString(getString(R.string.sort_key), mSortPreferences[which]);
-                            editor.commit();
-                            Log.v(LOG_TAG, "ONCLICK - mSortPreferences: " + mSortPreferences[which]);
-                        }
-                    });
-
-            builder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    updateMovies();
-                }
-            });
-
-            // Create the AlertDialog
-            AlertDialog dialog = builder.create();
-            dialog.show();
+            mSortDialog.show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -85,11 +85,9 @@ public class FragmentMain extends Fragment {
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
 
         // Get the sort order set by the user by getting the SharedPreferences
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         String sortPreference = sharedPref.getString(getString(R.string.sort_key),
                 getString(R.string.sort_default));
-        Log.v(LOG_TAG, "sortPreference: " + sortPreference);
         fetchMoviesTask.execute(sortPreference);
     }
 
@@ -138,7 +136,6 @@ public class FragmentMain extends Fragment {
             final String SORT_PARAM = "sort_by";
             final String API_PARAM = "api_key";
             String sort = sortPreference;
-            //sort = "vote_average.desc";
             String apiKey = "";
 
             try {
