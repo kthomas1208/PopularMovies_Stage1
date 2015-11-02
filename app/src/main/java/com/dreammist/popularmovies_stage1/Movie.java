@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by kevinthomas on 10/26/15.
+ * Object for holding a movie's data
  */
 public class Movie implements Parcelable{
     String overview;
@@ -12,14 +12,6 @@ public class Movie implements Parcelable{
     private String posterPath;
     String title;
     float voteAverage;
-
-    public Movie() {
-        this.overview = "";
-        this.releaseDate = "";
-        this.posterPath = "";
-        this.title = "";
-        this.voteAverage = 0;
-    }
 
     public Movie(String overview, String releaseDate, String posterPath, String title, float voteAverage) {
         this.overview = overview;

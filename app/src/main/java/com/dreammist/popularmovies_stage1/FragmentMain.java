@@ -81,6 +81,9 @@ public class FragmentMain extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Calls the movie API and updates the list of movies. Can be called anywhere safely.
+     */
     private void updateMovies(){
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
 
@@ -152,7 +155,7 @@ public class FragmentMain extends Fragment {
 
                 URL url = new URL(uriBuilder.build().toString());
 
-                Log.v(LOG_TAG, url.toString());
+                //Log.v(LOG_TAG, url.toString());
 
                 // Create the request to TheMovieDB, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -222,6 +225,12 @@ public class FragmentMain extends Fragment {
             }
         }
 
+        /**
+         * Creates a Movie object from the movie database API JSON object.
+         * @param moviesJsonStr the string holding the JSON response from the API request
+         * @return Returns a Movie object fully loaded from the API call
+         * @throws JSONException
+         */
         private Movie[] getMovieDataFromJSON(String moviesJsonStr) throws JSONException {
             JSONObject moviesJSON = new JSONObject(moviesJsonStr);
             JSONArray resultsArray = moviesJSON.getJSONArray("results");

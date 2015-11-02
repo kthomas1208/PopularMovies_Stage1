@@ -65,15 +65,18 @@ public class DetailActivity extends AppCompatActivity {
                 String releaseDate = movie.releaseDate;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 Date date = null;
+                String releaseYearStr = "";
                 try {
                     date = sdf.parse(releaseDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(date);
-                int releaseYear = cal.get(Calendar.YEAR);
-                String releaseYearStr = Integer.toString(releaseYear);
+                if (date != null) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
+                    int releaseYear = cal.get(Calendar.YEAR);
+                    releaseYearStr = Integer.toString(releaseYear);
+                }
                 if (!releaseYearStr.isEmpty()) year.setText(releaseYearStr);
 
                 // Rating

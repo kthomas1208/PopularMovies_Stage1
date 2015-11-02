@@ -11,6 +11,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+/**
+ * An extension of ArrayAdapter that's used for ImageViews instead of TextViews
+ */
 public class ImageAdapter extends ArrayAdapter {
 
     private Context mContext;
@@ -22,7 +25,14 @@ public class ImageAdapter extends ArrayAdapter {
         mContext = context;
     }
 
-    // create a new ImageView for each item referenced by the Adapter
+    /**
+     * Creates a new ImageView for each item references by the Adapter. Uses the Picasso library to
+     * manage the ImageViews.
+     * @param position the image selected in the grid
+     * @param convertView to override
+     * @param parent the calling View element
+     * @return Returns the ImageView
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
         mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
