@@ -1,10 +1,12 @@
 package com.dreammist.popularmovies_stage1;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,11 +79,13 @@ public class DetailActivity extends AppCompatActivity {
                 // Rating
                 RatingBar rating = (RatingBar) rootview.findViewById(R.id.ratingBar);
                 rating.setStepSize((float)0.01);
-                Log.v(LOG_TAG, "API RATING: " + Float.toString(movie.voteAverage));
                 float ratingScaled = (movie.voteAverage*5)/10;
-                Log.v(LOG_TAG, "RATING SCALED: " + Float.toString(ratingScaled));
                 rating.setRating(ratingScaled);
-                Log.v(LOG_TAG, "SET RATING: " + Float.toString(rating.getRating()));
+
+                LayerDrawable stars = (LayerDrawable) rating.getProgressDrawable();
+                stars.getDrawable(0).setColorFilter(Color.parseColor("#c5ae3b"), PorterDuff.Mode.SRC_ATOP);
+                stars.getDrawable(1).setColorFilter(Color.parseColor("#c5ae3b"), PorterDuff.Mode.SRC_ATOP);
+                stars.getDrawable(2).setColorFilter(Color.parseColor("#c5ae3b"), PorterDuff.Mode.SRC_ATOP);
 
                 // Description
                 TextView description = (TextView) rootview.findViewById(R.id.movie_description);
