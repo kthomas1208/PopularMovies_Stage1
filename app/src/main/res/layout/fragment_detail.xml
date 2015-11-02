@@ -16,19 +16,19 @@
             android:id="@+id/movie_title"
             android:layout_gravity="center_horizontal"
             android:gravity="center_vertical"
-            android:textSize="40sp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="10dp"/>
+            android:textSize="@dimen/detail_title_text_size"
+            android:layout_marginLeft="@dimen/detail_left_margin"
+            android:layout_marginRight="@dimen/detail_right_margin"
+            android:layout_marginBottom="@dimen/detail_title_bottom_margin"/>
 
         <ImageView
-            android:layout_width="185dp"
-            android:layout_height="277dp"
+            android:layout_width="@dimen/detail_poster_width"
+            android:layout_height="@dimen/detail_poster_height"
             android:id="@+id/detail_movie_poster"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="@dimen/detail_poster_bottom_margin"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,9 +53,9 @@
             tools:text=""
             android:id="@+id/movie_description"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="25dp" />
+            android:layout_marginLeft="@dimen/detail_left_margin"
+            android:layout_marginRight="@dimen/detail_right_margin"
+            android:layout_marginBottom="@dimen/detail_bottom_margin" />
 
 </LinearLayout>
 </ScrollView>
