@@ -27,7 +27,6 @@
             android:id="@+id/detail_movie_poster"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
-            tools:src="@drawable/interstellar"
             android:scaleType="centerCrop"
             android:layout_marginBottom="5dp"/>
 
