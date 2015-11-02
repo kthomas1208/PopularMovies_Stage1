@@ -14,6 +14,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+
 public class DetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
@@ -55,7 +61,18 @@ public class DetailActivity extends AppCompatActivity {
                 // Year
                 TextView year = (TextView) rootview.findViewById(R.id.movie_year);
                 String releaseDate = movie.releaseDate;
-                if (!releaseDate.isEmpty()) year.setText(releaseDate);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = null;
+                try {
+                    date = sdf.parse(releaseDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                int releaseYear = cal.get(Calendar.YEAR);
+                String releaseYearStr = Integer.toString(releaseYear);
+                if (!releaseYearStr.isEmpty()) year.setText(releaseYearStr);
 
                 // Rating
                 RatingBar rating = (RatingBar) rootview.findViewById(R.id.ratingBar);
