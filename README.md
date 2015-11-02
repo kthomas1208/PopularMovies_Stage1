@@ -5,7 +5,12 @@ Author: Kevin Thomas
 
 ## Purpose
 This app is for Udacity's Android Nanodegree. It's part 1 of a two part project testing our knowledge of basic Android development. Some concepts covered are:
-* stuff
+* Creating, managing, and launching new activities with intents
+* Using an API to pull data from the Internet
+* Managing layouts
+* Running tasks asynchronously 
+* Looking for help in the right places
+* Having fun programming
 
 ## Description
 The app uses an API provided by [The Movie Database (TMDb)](https://www.themoviedb.org/) to get movie info. It displays a grid of movie posters sorted by either popularity or vote count, depending on the user's selection. When the user clicks on a movie poster, a more detailed view of the movie is displayed showing the movie's title, release year, rating, and plot synopsis. 
