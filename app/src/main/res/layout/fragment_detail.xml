@@ -22,8 +22,8 @@
             android:layout_marginBottom="10dp"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="185dp"
+            android:layout_height="277dp"
             android:id="@+id/detail_movie_poster"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
