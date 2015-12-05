@@ -7,13 +7,15 @@ import android.os.Parcelable;
  * Object for holding a movie's data
  */
 public class Movie implements Parcelable{
+    long id;
     String overview;
     String releaseDate;
     private String posterPath;
     String title;
     float voteAverage;
 
-    public Movie(String overview, String releaseDate, String posterPath, String title, float voteAverage) {
+    public Movie(long id, String overview, String releaseDate, String posterPath, String title, float voteAverage) {
+        this.id = id;
         this.overview = overview;
         this.releaseDate = releaseDate;
         this.posterPath = posterPath;
@@ -22,6 +24,7 @@ public class Movie implements Parcelable{
     }
 
     private Movie(Parcel in) {
+        this.id = in.readLong();
         this.overview = in.readString();
         this.releaseDate = in.readString();
         this.posterPath = in.readString();
@@ -38,6 +41,7 @@ public class Movie implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(id);
         parcel.writeString(overview);
         parcel.writeString(releaseDate);
         parcel.writeString(posterPath);
