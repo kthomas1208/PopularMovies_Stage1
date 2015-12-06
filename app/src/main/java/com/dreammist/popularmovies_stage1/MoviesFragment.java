@@ -29,7 +29,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class FragmentMain extends Fragment {
+public class MoviesFragment extends Fragment {
 
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
@@ -37,7 +37,7 @@ public class FragmentMain extends Fragment {
     final String[] mSortPreferences = {"popularity.desc","vote_average.desc"};
     AlertDialog mSortDialog;
 
-    public FragmentMain() {}
+    public MoviesFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstance) {

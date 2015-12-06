@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
         // Add fragment to this activity
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FragmentMain fragmentMain = new FragmentMain();
-        fragmentTransaction.add(R.id.container, fragmentMain);
+        MoviesFragment moviesFragment = new MoviesFragment();
+        fragmentTransaction.add(R.id.container, moviesFragment);
         fragmentTransaction.commit();
     }
 }
