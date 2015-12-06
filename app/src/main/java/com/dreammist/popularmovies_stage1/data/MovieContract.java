@@ -22,7 +22,7 @@ import android.provider.BaseColumns;
 import android.text.format.Time;
 
 /**
- * Defines table and column names for the weather database.
+ * Defines table and column names for the movie database.
  */
 public class MovieContract {
 

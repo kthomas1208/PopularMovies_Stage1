@@ -51,7 +51,6 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
                 MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
-                // the ID of the location entry associated with this weather data
                 MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                 MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
