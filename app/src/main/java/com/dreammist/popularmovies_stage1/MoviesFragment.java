@@ -290,7 +290,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
          * @return Returns a Movie object fully loaded from the API call
          * @throws JSONException
          */
-        private Movie[] getMovieDataFromJSON(String moviesJsonStr) throws JSONException {
+        private void getMovieDataFromJSON(String moviesJsonStr) throws JSONException {
             JSONObject moviesJSON = new JSONObject(moviesJsonStr);
             JSONArray resultsArray = moviesJSON.getJSONArray("results");
             Movie[] movies = new Movie[resultsArray.length()];
@@ -316,7 +316,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, voteAverage);
 
                 cVVector.add(movieValues);
-                movies[i] = new Movie(id, overview, releaseDate, posterPath, title, voteAverage);
+                //movies[i] = new Movie(id, overview, releaseDate, posterPath, title, voteAverage);
             }
 
             int inserted = 0;
@@ -328,8 +328,6 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             }
 
             Log.d(LOG_TAG, "FetchMovieTask Complete. " + inserted + " Inserted");
-
-            return movies;
         }
     }
 }
