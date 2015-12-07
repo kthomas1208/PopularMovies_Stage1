@@ -69,8 +69,8 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         Uri moviesUri = MovieContract.MovieEntry.buildMovieUri(id);
 
         Loader<Cursor> loader = new CursorLoader(getActivity(),
-                moviesUri,
-                MOVIE_COLUMNS,
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,
                 null,
                 null,
                 null);
