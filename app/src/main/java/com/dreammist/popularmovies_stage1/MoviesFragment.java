@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.dreammist.popularmovies_stage1.data.MovieContract;
@@ -70,12 +68,14 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri moviesUri = MovieContract.MovieEntry.buildMovieUri(id);
 
-        return new CursorLoader(getActivity(),
+        Loader<Cursor> loader = new CursorLoader(getActivity(),
                 moviesUri,
                 MOVIE_COLUMNS,
                 null,
                 null,
                 null);
+
+        return loader;
     }
 
     @Override
@@ -168,17 +168,17 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
         gridView.setAdapter(mPosterAdapter);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Movie movie = (Movie) mPosterAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("com.dreammist.popularmovies_stage1.Movie", movie);
-                startActivity(intent);
-            }
-        });
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Movie movie = (Movie) mPosterAdapter.getItem(position);
+//                Intent intent = new Intent(getActivity(),DetailActivity.class);
+//                intent.putExtra("com.dreammist.popularmovies_stage1.Movie", movie);
+//                startActivity(intent);
+//            }
+//        });
 
-        //updateMovies();
+        updateMovies();
 
         return rootView;
     }
@@ -314,9 +314,9 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
                 movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, posterPath);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
                 movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, voteAverage);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, 0);
 
                 cVVector.add(movieValues);
-                //movies[i] = new Movie(id, overview, releaseDate, posterPath, title, voteAverage);
             }
 
             int inserted = 0;
