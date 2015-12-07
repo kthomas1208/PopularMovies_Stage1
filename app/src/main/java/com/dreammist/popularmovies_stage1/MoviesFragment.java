@@ -1,14 +1,19 @@
 package com.dreammist.popularmovies_stage1;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+
+import com.dreammist.popularmovies_stage1.data.MovieContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,15 +34,71 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Vector;
 
-public class MoviesFragment extends Fragment {
+public class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
     ImageAdapter mPosterAdapter;
     final String[] mSortPreferences = {"popularity.desc","vote_average.desc"};
     AlertDialog mSortDialog;
+
+    private static final int MOVIE_LOADER = 0;
+
+    private static final String[] MOVIE_COLUMNS = {
+            MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
+            MovieContract.MovieEntry.COLUMN_MOVIE_ID,
+            MovieContract.MovieEntry.COLUMN_TITLE,
+            MovieContract.MovieEntry.COLUMN_RELEASE_DATE,
+            MovieContract.MovieEntry.COLUMN_POSTER_PATH,
+            MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+            MovieContract.MovieEntry.COLUMN_OVERVIEW,
+            MovieContract.MovieEntry.COLUMN_IS_FAVORITE
+    };
+
+    static final int COL_MOVIE_ID_KEY = 0;
+    static final int COL_MOVIE_ID = 1;
+    static final int COL_TITLE = 2;
+    static final int COL_RELEASE_DATE = 3;
+    static final int COL_POSTER_PATH = 4;
+    static final int COL_VOTE_AVERAGE = 5;
+    static final int COL_OVERVIEW = 6;
+    static final int COL_IS_FAVORITE = 7;
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri moviesUri = MovieContract.MovieEntry.buildMovieUri(id);
+
+        return new CursorLoader(getActivity(),
+                moviesUri,
+                MOVIE_COLUMNS,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mPosterAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mPosterAdapter.swapCursor(null);
+    }
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
+    }
 
     public MoviesFragment() {}
 
@@ -85,7 +148,7 @@ public class MoviesFragment extends Fragment {
      * Calls the movie API and updates the list of movies. Can be called anywhere safely.
      */
     private void updateMovies(){
-        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
+        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask(getActivity());
 
         // Get the sort order set by the user by getting the SharedPreferences
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -97,12 +160,9 @@ public class MoviesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        mPosterAdapter = new ImageAdapter(getActivity(), null, 0);
 
-        mPosterAdapter = new ImageAdapter(
-                getActivity(),                      //Context
-                R.layout.grid_item_poster,          //ID of image layout
-                new ArrayList<Movie>());            //list of data (initially blank)
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get the gridview and set the adapter to either ImageAdapter or ArrayAdapter (with image)
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
@@ -118,17 +178,29 @@ public class MoviesFragment extends Fragment {
             }
         });
 
-        updateMovies();
+        //updateMovies();
 
         return rootView;
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, Movie[]> {
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
+        private final Context mContext;
+
+        public FetchMoviesTask(Context context) {
+            mContext = context;
+        }
+
         @Override
-        protected Movie[] doInBackground(String... params) {
+        protected Void doInBackground(String... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -183,9 +255,15 @@ public class MoviesFragment extends Fragment {
                     // Stream was empty.  No point in parsing.
                     return null;
                 }
+
+                // Parse through JSON and return relevant data
                 moviesJsonStr = buffer.toString();
+                getMovieDataFromJSON(moviesJsonStr);
                 //Log.v(LOG_TAG, forecastJsonStr); // Printing out the weather data to log
 
+            }catch (JSONException e) {
+                Log.v(LOG_TAG, e.getMessage(), e);
+                return null;
             }catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the data, there's no point in attempting
@@ -203,26 +281,7 @@ public class MoviesFragment extends Fragment {
                     }
                 }
             }
-
-            // Parse through JSON and return relevant data
-            try {
-                Movie[] movies = getMovieDataFromJSON(moviesJsonStr);
-                return movies;
-            }
-            catch (JSONException e) {
-                Log.v(LOG_TAG, e.getMessage(), e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Movie[] movies) {
-            if(movies != null) {
-                mPosterAdapter.clear();         // clear any previous data
-                for(Movie movie : movies) {
-                    mPosterAdapter.add(movie);  // add new data
-                }
-            }
+            return null;
         }
 
         /**
@@ -236,6 +295,9 @@ public class MoviesFragment extends Fragment {
             JSONArray resultsArray = moviesJSON.getJSONArray("results");
             Movie[] movies = new Movie[resultsArray.length()];
 
+            // Insert the new weather information into the database
+            Vector<ContentValues> cVVector = new Vector<ContentValues>(resultsArray.length());
+
             for(int i=0; i < resultsArray.length(); i++) {
                 long id = resultsArray.getJSONObject(i).getLong("id");
                 String overview  = resultsArray.getJSONObject(i).getString("overview");
@@ -244,8 +306,28 @@ public class MoviesFragment extends Fragment {
                 String title = resultsArray.getJSONObject(i).getString("title");
                 float voteAverage = (float)resultsArray.getJSONObject(i).getDouble("vote_average");
 
+                ContentValues movieValues = new ContentValues();
+
+                movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, id);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, overview);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, releaseDate);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, posterPath);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
+                movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, voteAverage);
+
+                cVVector.add(movieValues);
                 movies[i] = new Movie(id, overview, releaseDate, posterPath, title, voteAverage);
             }
+
+            int inserted = 0;
+            // add to database
+            if ( cVVector.size() > 0 ) {
+                ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                cVVector.toArray(cvArray);
+                inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, cvArray);
+            }
+
+            Log.d(LOG_TAG, "FetchMovieTask Complete. " + inserted + " Inserted");
 
             return movies;
         }

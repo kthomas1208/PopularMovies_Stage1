@@ -25,6 +25,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dreammist.popularmovies_stage1.MainActivity" />
         </activity>
+        <provider
+            android:authorities="com.dreammist.popularmovies_stage1"
+            android:name=".data.MovieProvider" />
     </application>
 
 </manifest>
