@@ -42,7 +42,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
         final String SORT_PARAM = "sort_by";
         final String API_PARAM = "api_key";
         String sort = sortPreference;
-        String apiKey = "";
+        String apiKey = BuildConfig.TMDB_API_KEY;
 
         try {
             // Build the URI for the API call
