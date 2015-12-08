@@ -11,9 +11,9 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-public class ImageAdapter extends CursorAdapter {
+public class MovieAdapter extends CursorAdapter {
 
-    public ImageAdapter(Context context, Cursor c, int flags) {
+    public MovieAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
 
@@ -22,14 +22,14 @@ public class ImageAdapter extends CursorAdapter {
 
         View view = LayoutInflater.from(context).inflate(R.layout.grid_item_poster, parent, false);
 
-        Log.v("ImageAdapter", "IN NEW VIEW");
+        Log.v("MovieAdapter", "IN NEW VIEW");
 
         return view;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        Log.v("ImageAdapter", "IN BIND VIEW");
+        Log.v("MovieAdapter", "IN BIND VIEW");
 
         final String path = "http://image.tmdb.org/t/p/w185/";
         String posterPath = cursor.getString(MoviesFragment.COL_POSTER_PATH);

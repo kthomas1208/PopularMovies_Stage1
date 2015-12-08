@@ -38,7 +38,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
-    ImageAdapter mPosterAdapter;
+    MovieAdapter mPosterAdapter;
     final String[] mSortPreferences = {"popularity.desc","vote_average.desc"};
     AlertDialog mSortDialog;
 
@@ -160,11 +160,11 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mPosterAdapter = new ImageAdapter(getActivity(), null, 0);
+        mPosterAdapter = new MovieAdapter(getActivity(), null, 0);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        // Get the gridview and set the adapter to either ImageAdapter or ArrayAdapter (with image)
+        // Get the gridview and set the adapter to either MovieAdapter or ArrayAdapter (with image)
         GridView gridView = (GridView) rootView.findViewById(R.id.gridview);
         gridView.setAdapter(mPosterAdapter);
 
