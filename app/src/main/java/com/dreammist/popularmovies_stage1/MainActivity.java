@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.facebook.stetho.Stetho;
+
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -27,5 +30,13 @@ public class MainActivity extends AppCompatActivity {
         MoviesFragment moviesFragment = new MoviesFragment();
         fragmentTransaction.add(R.id.container, moviesFragment);
         fragmentTransaction.commit();
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+                        .build());
     }
 }
