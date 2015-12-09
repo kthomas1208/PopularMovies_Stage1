@@ -17,6 +17,7 @@ package com.dreammist.popularmovies_stage1.data;
 
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -127,21 +128,12 @@ public class MovieProvider extends ContentProvider {
         return matcher;
     }
 
-    /*
-        Students: We've coded this for you.  We just create a new MovieDbHelper for later use
-        here.
-     */
     @Override
     public boolean onCreate() {
         mOpenHelper = new MovieDbHelper(getContext());
         return true;
     }
 
-    /*
-        Students: Here's where you'll code the getType function that uses the UriMatcher.  You can
-        test this by uncommenting testGetType in TestProvider.
-
-     */
     @Override
     public String getType(Uri uri) {
 
@@ -162,47 +154,36 @@ public class MovieProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder){
 
         Cursor retCursor;
-        return mOpenHelper.getReadableDatabase().query(
-                true,                                   // Distinct
-                MovieContract.MovieEntry.TABLE_NAME,    // Table name
-                projection,                             // Columns
-                selection,                              // Selection (WHERE)
-                selectionArgs,                          // Selection arguments
-                null,                                   // Group by
-                null,                                   // Having
-                null,                                   // Order by
-                "20");                                  // Limit
-
-//        switch(sUriMatcher.match(uri)){
-//            // All Flavors selected
-//            case MOVIE:{
-//                retCursor = mOpenHelper.getReadableDatabase().query(
-//                        MovieContract.MovieEntry.TABLE_NAME,
-//                        projection,
-//                        selection,
-//                        selectionArgs,
-//                        null,
-//                        null,
-//                        sortOrder);
-//                return retCursor;
-//            }
-//            // Individual flavor based on Id selected
-//            case MOVIE_WITH_ID:{
-//                retCursor = mOpenHelper.getReadableDatabase().query(
-//                        MovieContract.MovieEntry.TABLE_NAME,
-//                        projection,
-//                        MovieContract.MovieEntry._ID + " = ?",
-//                        new String[] {String.valueOf(ContentUris.parseId(uri))},
-//                        null,
-//                        null,
-//                        sortOrder);
-//                return retCursor;
-//            }
-//            default:{
-//                // By default, we assume a bad URI
-//                throw new UnsupportedOperationException("Unknown uri: " + uri);
-//            }
-//        }
+        switch(sUriMatcher.match(uri)){
+            // All Flavors selected
+            case MOVIE:{
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.MovieEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                return retCursor;
+            }
+            // Individual flavor based on Movie ID selected
+            case MOVIE_WITH_ID:{
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.MovieEntry.TABLE_NAME,
+                        projection,
+                        MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? ",
+                        new String[] {String.valueOf(ContentUris.parseId(uri))},
+                        null,
+                        null,
+                        sortOrder);
+                return retCursor;
+            }
+            default:{
+                // By default, we assume a bad URI
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
+        }
     }
 
     @Override

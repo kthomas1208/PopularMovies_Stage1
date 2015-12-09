@@ -1,7 +1,9 @@
 package com.dreammist.popularmovies_stage1;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -151,13 +153,47 @@ public class FetchMoviesTask extends AsyncTask<String, Void, Void> {
         }
 
         int inserted = 0;
+        int updated = 0;
         // add to database
         if ( cVVector.size() > 0 ) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
             cVVector.toArray(cvArray);
-            inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, cvArray);
+            // TODO: 12/9/15 If table empty, do bulk insert
+            //inserted = mContext.getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, cvArray);
+            for (ContentValues contentValues : cvArray) {
+                Uri uriWithID = MovieContract.MovieEntry.buildMovieUri(
+                        contentValues.getAsLong(MovieContract.MovieEntry.COLUMN_MOVIE_ID));
+                // Check if movie already exists in DB
+                Cursor c = mContext.getContentResolver().query(
+                        uriWithID,
+                        MoviesFragment.MOVIE_COLUMNS,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                // If row exists, simply update with new data
+                if(c.moveToFirst()) {
+                    mContext.getContentResolver().update(
+                            MovieContract.MovieEntry.CONTENT_URI,
+                            contentValues,
+                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = ? ",
+                            new String[] {String.valueOf(ContentUris.parseId(uriWithID))}
+                    );
+                    updated++;
+                }
+                // Otherwise insert normally
+                else {
+                    mContext.getContentResolver().insert(
+                            MovieContract.MovieEntry.CONTENT_URI,
+                            contentValues
+                    );
+                    inserted++;
+                }
+            }
         }
 
-        Log.d(LOG_TAG, "FetchMovieTask Complete. " + inserted + " Inserted");
+        Log.d(LOG_TAG, "FetchMovieTask Complete. " + inserted + " Inserted " +
+                updated + " Updated");
     }
 }

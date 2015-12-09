@@ -29,7 +29,7 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
     private static final int MOVIE_LOADER = 0;
 
-    private static final String[] MOVIE_COLUMNS = {
+    public static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.COLUMN_MOVIE_ID,
             MovieContract.MovieEntry.COLUMN_TITLE,
