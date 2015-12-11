@@ -1,6 +1,7 @@
 package com.dreammist.popularmovies_stage1;
 
 import android.app.AlertDialog;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.dreammist.popularmovies_stage1.data.MovieContract;
@@ -163,10 +165,42 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 //            }
 //        });
 
+        // make each item clickable
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // increment the position to match Database Ids indexed starting at 1
+                int uriId = position + 1;
+                // append Id to uri
+                Uri uri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI,
+                        uriId);
+                // create fragment
+                DetailFragment detailFragment = DetailFragment.newInstance(position, uri);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, detailFragment)
+                        .addToBackStack(null).commit();
+            }
+        });
+
         updateMovies();
 
         return rootView;
     }
+
+    /**
+     * Make this something like, onSortChanged()
+     * @param //newLocation
+     */
+//    void onLocationChanged( String newLocation ) {
+//        // replace the uri, since the location has changed
+//        Uri uri = mUri;
+//        if (null != uri) {
+//            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+//            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+//            mUri = updatedUri;
+//            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+//        }
+//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
