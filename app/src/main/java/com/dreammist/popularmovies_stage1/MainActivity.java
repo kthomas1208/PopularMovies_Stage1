@@ -1,11 +1,13 @@
 package com.dreammist.popularmovies_stage1;
 
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
+
+import com.facebook.stetho.Stetho;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,5 +29,13 @@ public class MainActivity extends AppCompatActivity {
         FragmentMain fragmentMain = new FragmentMain();
         fragmentTransaction.add(R.id.container, fragmentMain);
         fragmentTransaction.commit();
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+                        .build());
     }
 }
