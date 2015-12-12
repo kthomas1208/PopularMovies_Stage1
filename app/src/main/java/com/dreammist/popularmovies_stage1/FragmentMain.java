@@ -237,13 +237,14 @@ public class FragmentMain extends Fragment {
             Movie[] movies = new Movie[resultsArray.length()];
 
             for(int i=0; i < resultsArray.length(); i++) {
+                long movieId = resultsArray.getJSONObject(i).getLong("id");
                 String overview  = resultsArray.getJSONObject(i).getString("overview");
                 String releaseDate = resultsArray.getJSONObject(i).getString("release_date");
                 String posterPath = resultsArray.getJSONObject(i).getString("poster_path");
                 String title = resultsArray.getJSONObject(i).getString("title");
                 float voteAverage = (float)resultsArray.getJSONObject(i).getDouble("vote_average");
 
-                movies[i] = new Movie(overview, releaseDate, posterPath, title, voteAverage);
+                movies[i] = new Movie(movieId, overview, releaseDate, posterPath, title, voteAverage);
             }
 
             return movies;
