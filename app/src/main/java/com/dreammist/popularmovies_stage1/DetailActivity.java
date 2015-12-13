@@ -96,6 +96,10 @@ public class DetailActivity extends AppCompatActivity {
                 if(overViewText.equalsIgnoreCase("null")) overViewText = getString(R.string.no_overview);
 
                 description.setText(overViewText);
+
+                // Trailer(s)
+
+                // Review(s)
             }
 
             return rootview;

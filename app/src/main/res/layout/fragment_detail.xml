@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text=""
+            tools:text="Ant-Man"
             android:id="@+id/movie_title"
             android:layout_gravity="center_horizontal"
             android:gravity="center_vertical"
@@ -28,7 +28,8 @@
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:layout_marginBottom="@dimen/detail_poster_bottom_margin"/>
+            android:layout_marginBottom="@dimen/detail_poster_bottom_margin"
+            tools:src="@drawable/interstellar"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -46,6 +47,15 @@
             android:isIndicator="true"
             android:rating="0" />
 
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favorite"
+            android:id="@+id/toggle_favorite"
+            android:textOff="@string/favorite"
+            android:textOn="@string/unfavorite"
+            android:layout_gravity="center_horizontal" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,6 +66,11 @@
             android:layout_marginLeft="@dimen/detail_left_margin"
             android:layout_marginRight="@dimen/detail_right_margin"
             android:layout_marginBottom="@dimen/detail_bottom_margin" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="@color/gray"/>
 
 </LinearLayout>
+    <!--TODO: Add trailers and reviews, and heart for favorites-->
 </ScrollView>

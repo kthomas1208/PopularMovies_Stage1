@@ -6,5 +6,8 @@
     <string name="sort_key">sort</string>
     <string name="sort_default">popularity.desc</string>
     <string name="no_overview">No overview found</string>
+    <string name="favorite">Favorite</string>
+    <string name="unfavorite">Unfavorite</string>
+
 
 </resources>
