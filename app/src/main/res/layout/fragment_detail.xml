@@ -9,7 +9,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_layout">
 
         <!-- MOVIE TITLE -->
         <TextView
@@ -96,12 +97,13 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/detail_left_margin"
             android:layout_marginRight="@dimen/detail_right_margin"
-            android:layout_marginBottom="@dimen/trailer_bottom_margin" >
+            android:layout_marginBottom="@dimen/trailer_bottom_margin"
+            android:id="@+id/trailer_1">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/play_icon"
+                android:id="@+id/play_icon1"
                 android:src="@drawable/play_button" />
 
             <TextView
@@ -120,7 +122,8 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/detail_left_margin"
             android:layout_marginRight="@dimen/detail_right_margin"
-            android:layout_marginBottom="@dimen/trailer_bottom_margin" >
+            android:layout_marginBottom="@dimen/trailer_bottom_margin"
+            android:id="@+id/trailer_2">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -132,7 +135,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Trailer 1"
+                android:text="Trailer 2"
                 android:id="@+id/trailer_label2"
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"

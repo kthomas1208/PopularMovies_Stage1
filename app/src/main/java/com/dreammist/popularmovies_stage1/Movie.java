@@ -14,6 +14,26 @@ public class Movie implements Parcelable{
     float voteAverage;
     long movieId;
 
+    String[] trailers;
+    String[][] reviews;
+
+
+    public String[] getTrailers() {
+        return trailers;
+    }
+
+    public void setTrailers(String[] trailers) {
+        this.trailers = trailers;
+    }
+
+    public String[][] getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(String[][] reviews) {
+        this.reviews = reviews;
+    }
+
     public Movie(long movieId, String overview, String releaseDate, String posterPath, String title, float voteAverage) {
         this.movieId = movieId;
         this.overview = overview;
