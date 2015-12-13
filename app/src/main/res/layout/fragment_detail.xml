@@ -156,14 +156,7 @@
             android:text="@string/reviews"
             android:id="@+id/review_title"
             android:layout_marginLeft="@dimen/detail_left_margin"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="User: Cotton-eyed Joe"
-            android:id="@+id/review_user"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/detail_left_margin" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -173,14 +166,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/detail_left_margin"
             android:layout_marginRight="@dimen/detail_right_margin" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="User: Frank Ocean"
-            android:id="@+id/review_user2"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/detail_left_margin" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

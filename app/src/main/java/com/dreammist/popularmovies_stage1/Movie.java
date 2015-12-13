@@ -15,7 +15,7 @@ public class Movie implements Parcelable{
     long movieId;
 
     String[] trailers;
-    String[][] reviews;
+    String[] reviews;
 
 
     public String[] getTrailers() {
@@ -26,11 +26,11 @@ public class Movie implements Parcelable{
         this.trailers = trailers;
     }
 
-    public String[][] getReviews() {
+    public String[] getReviews() {
         return reviews;
     }
 
-    public void setReviews(String[][] reviews) {
+    public void setReviews(String[] reviews) {
         this.reviews = reviews;
     }
 
@@ -50,6 +50,8 @@ public class Movie implements Parcelable{
         this.posterPath = in.readString();
         this.title = in.readString();
         this.voteAverage = in.readFloat();
+        this.trailers = in.createStringArray();
+        this.reviews = in.createStringArray();
     }
 
     public String getPosterPath() { return posterPath; }
@@ -67,6 +69,8 @@ public class Movie implements Parcelable{
         parcel.writeString(posterPath);
         parcel.writeString(title);
         parcel.writeFloat(voteAverage);
+        parcel.writeStringArray(trailers);
+        parcel.writeStringArray(reviews);
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
