@@ -2,13 +2,16 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <!-- MOVIE TITLE -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,6 +24,7 @@
             android:layout_marginRight="@dimen/detail_right_margin"
             android:layout_marginBottom="@dimen/detail_title_bottom_margin"/>
 
+        <!-- MOVIE POSTER -->
         <ImageView
             android:layout_width="@dimen/detail_poster_width"
             android:layout_height="@dimen/detail_poster_height"
@@ -31,14 +35,16 @@
             android:layout_marginBottom="@dimen/detail_poster_bottom_margin"
             tools:src="@drawable/interstellar"/>
 
+        <!-- MOVIE YEAR -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text=""
+            tools:text="2015"
             android:id="@+id/movie_year"
             android:layout_gravity="center_horizontal" />
 
+        <!-- RATING BAR -->
         <RatingBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,6 +53,7 @@
             android:isIndicator="true"
             android:rating="0" />
 
+        <!-- FAVORITE BUTTON -->
         <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,11 +63,12 @@
             android:textOn="@string/unfavorite"
             android:layout_gravity="center_horizontal" />
 
+        <!-- MOVIE DESCRIPTION -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            tools:text=""
+            tools:text="Movie Description"
             android:id="@+id/movie_description"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="@dimen/detail_left_margin"
@@ -68,9 +76,117 @@
             android:layout_marginBottom="@dimen/detail_bottom_margin" />
         <View
             android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:background="@color/gray"/>
+            android:layout_height="@dimen/horizontal_rule_height"
+            android:background="@color/gray"
+            android:layout_marginLeft="@dimen/detail_left_margin"
+            android:layout_marginRight="@dimen/detail_right_margin"/>
 
-</LinearLayout>
-    <!--TODO: Add trailers and reviews, and heart for favorites-->
+        <!-- TRAILERS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/trailers"
+            android:id="@+id/trailer_title"
+            android:layout_marginLeft="@dimen/detail_left_margin"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/detail_left_margin"
+            android:layout_marginRight="@dimen/detail_right_margin"
+            android:layout_marginBottom="@dimen/trailer_bottom_margin" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/play_icon"
+                android:src="@drawable/play_button" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Trailer 1"
+                android:id="@+id/trailer_label"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/detail_left_margin"
+            android:layout_marginRight="@dimen/detail_right_margin"
+            android:layout_marginBottom="@dimen/trailer_bottom_margin" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/play_icon2"
+                android:src="@drawable/play_button" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Trailer 1"
+                android:id="@+id/trailer_label2"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp" />
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/horizontal_rule_height"
+            android:background="@color/gray"
+            android:layout_marginLeft="@dimen/detail_left_margin"
+            android:layout_marginRight="@dimen/detail_right_margin"/>
+
+        <!-- REVIEWS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/reviews"
+            android:id="@+id/review_title"
+            android:layout_marginLeft="@dimen/detail_left_margin"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="User: Cotton-eyed Joe"
+            android:id="@+id/review_user"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/detail_left_margin" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="I loved it it was so much fun and very funny, another marvel masterpiece"
+            android:id="@+id/review1"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/detail_left_margin"
+            android:layout_marginRight="@dimen/detail_right_margin" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="User: Frank Ocean"
+            android:id="@+id/review_user2"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/detail_left_margin" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text= "@string/dummy_review"
+            android:id="@+id/review2"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/detail_left_margin"
+            android:layout_marginRight="@dimen/detail_right_margin"
+            android:layout_marginBottom="@dimen/detail_bottom_margin" />
+    </LinearLayout>
 </ScrollView>
