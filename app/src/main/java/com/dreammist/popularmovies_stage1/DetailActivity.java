@@ -106,27 +106,28 @@ public class DetailActivity extends AppCompatActivity {
                 LinearLayout detailLayout = (LinearLayout)rootview.findViewById(R.id.detail_layout);
 
                 // Trailer(s)
-                if(mMovie.getTrailers() != null) {
+                if(mMovie.getTrailers() != null && !mMovie.getTrailers()[0].isEmpty()) {
                     String[] trailers = mMovie.getTrailers();
-                    if(trailers.length > 1) {
-                        ImageView trailer1 = (ImageView) rootview.findViewById(R.id.play_icon1);
-                        trailer1.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                String id = mMovie.getTrailers()[0];
-                                try{
-                                    Intent intent = new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse("vnd.youtube:" + id));
-                                    startActivity(intent);
-                                }catch (ActivityNotFoundException ex){
-                                    Intent intent=new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse("http://www.youtube.com/watch?v="+id));
-                                    startActivity(intent);
-                                }
 
+                    ImageView trailer1 = (ImageView) rootview.findViewById(R.id.play_icon1);
+                    trailer1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String id = mMovie.getTrailers()[0];
+                            try{
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("vnd.youtube:" + id));
+                                startActivity(intent);
+                            }catch (ActivityNotFoundException ex){
+                                Intent intent=new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("http://www.youtube.com/watch?v="+id));
+                                startActivity(intent);
                             }
-                        });
 
+                        }
+                    });
+
+                    if(trailers.length > 1) {
                         ImageView trailer2 = (ImageView) rootview.findViewById(R.id.play_icon2);
                         trailer2.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -150,6 +151,13 @@ public class DetailActivity extends AppCompatActivity {
                         LinearLayout trailer2 = (LinearLayout) rootview.findViewById(R.id.trailer_2);
                         trailer2.setVisibility(View.GONE);
                     }
+                }
+                else {
+                    // Hide both trailers if empty
+                    LinearLayout trailer1 = (LinearLayout) rootview.findViewById(R.id.trailer_1);
+                    LinearLayout trailer2 = (LinearLayout) rootview.findViewById(R.id.trailer_2);
+                    trailer1.setVisibility(View.GONE);
+                    trailer2.setVisibility(View.GONE);
                 }
 
                 // Review(s)
