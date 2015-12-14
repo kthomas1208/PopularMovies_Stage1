@@ -28,13 +28,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FragmentMain extends Fragment {
 
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
     ImageAdapter mPosterAdapter;
-    final String[] mSortPreferences = {"popularity.desc","vote_average.desc"};
+    final String[] mSortPreferences = {"popularity.desc","vote_average.desc","favorites"};
     AlertDialog mSortDialog;
 
     public FragmentMain() {}
@@ -49,7 +50,11 @@ public class FragmentMain extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Sort");
 
-        builder.setSingleChoiceItems(R.array.sort_preferences, 0,
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String defaultSort = sharedPref.getString(getString(R.string.sort_key), mSortPreferences[0]);
+        int defaultIndex = Arrays.asList(mSortPreferences).indexOf(defaultSort);
+
+        builder.setSingleChoiceItems(R.array.sort_preferences, defaultIndex,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
