@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +77,7 @@ public class DetailActivity extends AppCompatActivity {
                 Picasso.with(container.getContext()).load(url).into((ImageView) poster);
 
                 /** Year **/
+                // Parse the release date information to only return the year
                 TextView year = (TextView) rootview.findViewById(R.id.movie_year);
                 String releaseDate = mMovie.releaseDate;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -102,6 +102,7 @@ public class DetailActivity extends AppCompatActivity {
                 float ratingScaled = (mMovie.voteAverage*5)/10;
                 rating.setRating(ratingScaled);
 
+                // Set the color of the stars
                 LayerDrawable stars = (LayerDrawable) rating.getProgressDrawable();
                 stars.getDrawable(0).setColorFilter(Color.parseColor("#c5ae3b"),
                         PorterDuff.Mode.SRC_ATOP);
@@ -114,29 +115,31 @@ public class DetailActivity extends AppCompatActivity {
                 ToggleButton toggle = (ToggleButton) rootview.findViewById(R.id.toggle_favorite);
 
                 // Check previous state of favorite button
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                Set<String> favorites = sharedPref.getStringSet("favorites",
+                SharedPreferences sharedPref = getActivity().getSharedPreferences(
+                        getString(R.string.favorites_pref),Context.MODE_PRIVATE);
+                Set<String> favorites = sharedPref.getStringSet(getString(R.string.favorites),
                         new HashSet<String>());
                 if(favorites.contains(Long.toString(mMovie.movieId))) toggle.setChecked(true);
                 else toggle.setChecked(false);
 
-                // Handle clicking of Favorite Button
+                // Add movie to favorites list if selected and remove from favorites list if
+                // unselected
                 toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                        Set<String> favorites = sharedPref.getStringSet("favorites",
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences(
+                                getString(R.string.favorites_pref),Context.MODE_PRIVATE);
+                        Set<String> favorites = sharedPref.getStringSet(getString(R.string.favorites),
                                 new HashSet<String>());
                         SharedPreferences.Editor editor = sharedPref.edit();
 
                         if (isChecked) {
                             favorites.add(Long.toString(mMovie.movieId));
-                            editor.putStringSet("favorites", favorites);
+                            editor.putStringSet(getString(R.string.favorites), favorites);
                             editor.commit();
                         } else {
-                            Log.v(LOG_TAG, "Favorite Unchecked");
                             favorites.remove(Long.toString(mMovie.movieId));
-                            editor.putStringSet("favorites", favorites);
+                            editor.putStringSet(getString(R.string.favorites), favorites);
                             editor.commit();
                         }
                     }

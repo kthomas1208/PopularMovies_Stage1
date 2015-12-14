@@ -1,5 +1,6 @@
 package com.dreammist.popularmovies_stage1;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,6 +31,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FragmentMain extends Fragment {
 
@@ -50,6 +54,8 @@ public class FragmentMain extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Sort");
 
+        // Get previously selected sort mode. Using a SharedPreference ensures mode persists through
+        // activity changes
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         String defaultSort = sharedPref.getString(getString(R.string.sort_key), mSortPreferences[0]);
         int defaultIndex = Arrays.asList(mSortPreferences).indexOf(defaultSort);
@@ -146,7 +152,12 @@ public class FragmentMain extends Fragment {
             String sort = sortPreference;
             String apiKey = BuildConfig.TMDB_API_KEY;
 
+            // Process the favorite list separately
+            if(sort.equalsIgnoreCase("favorites")) {
+                return processFavoritesList(urlConnection, reader);
+            }
             try {
+
                 // Build the URI for the API call
                 // http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=3695e86fa2fd999053d25829965eccc4
                 Uri.Builder uriBuilder = new Uri.Builder();
@@ -191,7 +202,7 @@ public class FragmentMain extends Fragment {
                 moviesJsonStr = buffer.toString();
                 //Log.v(LOG_TAG, forecastJsonStr); // Printing out the weather data to log
 
-            }catch (IOException e) {
+            } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the data, there's no point in attempting
                 // to parse it.
@@ -209,6 +220,7 @@ public class FragmentMain extends Fragment {
                 }
             }
 
+
             // Parse through JSON and return relevant data
             try {
                 Movie[] movies = getMovieDataFromJSON(moviesJsonStr);
@@ -218,6 +230,141 @@ public class FragmentMain extends Fragment {
                 Log.v(LOG_TAG, e.getMessage(), e);
                 return null;
             }
+        }
+
+        /**
+         * Creates an array of Movie objects from a favorites list stored in SharedPreferences.
+         * @param urlConnection Null connection object for API call
+         * @param reader Null reader object for processing API response
+         * @return An array of fully formed Movie objects
+         */
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        private Movie[] processFavoritesList(HttpURLConnection urlConnection, BufferedReader reader) {
+
+            // Get the movie IDs from the SharedPreferences
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(
+                    getString(R.string.favorites_pref), Context.MODE_PRIVATE);
+            Set<String> favorites = sharedPref.getStringSet(getString(R.string.favorites),
+                    new HashSet<String>());
+            final String API_PARAM = "api_key";
+            String apiKey = BuildConfig.TMDB_API_KEY;
+            Movie[] movies = new Movie[favorites.size()];
+            int i = -1;
+
+            // Create an API call for each movieID from the SharedPreferences
+            for(String favorite : favorites) {
+                String favoriteMoviesJsonStr = null;
+                try {
+                    i++;
+                    // Build the URI for the API call
+                    // http://api.themoviedb.org/3/movie/102899?append_to_response=trailers,review&api_key={apikey}
+                    Uri.Builder uriBuilder = new Uri.Builder();
+                    uriBuilder.scheme("http");
+                    uriBuilder.authority("api.themoviedb.org");
+                    uriBuilder.appendPath("3");
+                    uriBuilder.appendPath("movie");
+                    uriBuilder.appendPath(favorite);
+                    uriBuilder.appendQueryParameter("append_to_response","trailers,reviews");
+                    uriBuilder.appendQueryParameter(API_PARAM, apiKey);
+
+                    URL url = new URL(uriBuilder.build().toString());
+
+                    // Create the request to TheMovieDB, and open the connection
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
+
+                    // Read the input stream into a String
+                    InputStream inputStream = urlConnection.getInputStream();
+                    StringBuffer buffer = new StringBuffer();
+                    if (inputStream == null) {
+                        // Nothing to do.
+                        return null;
+                    }
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                        // But it does make debugging a *lot* easier if you print out the completed
+                        // buffer for debugging.
+                        buffer.append(line + "\n");
+                    }
+
+                    if (buffer.length() == 0) {
+                        // Stream was empty.  No point in parsing.
+                        return null;
+                    }
+                    favoriteMoviesJsonStr = buffer.toString();
+
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Error ", e);
+                    // If the code didn't successfully get the data, there's no point in attempting
+                    // to parse it.
+                    return null;
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (final IOException e) {
+                            Log.e(LOG_TAG, "Error closing stream", e);
+                        }
+                    }
+                }
+                // Parse through JSON and return relevant data
+                try {
+                    movies[i] = getFavoriteMovieDataFromJSON(favoriteMoviesJsonStr);
+                } catch (JSONException e) {
+                    Log.v(LOG_TAG, e.getMessage(), e);
+                    return null;
+                }
+            }
+            return movies;
+        }
+
+        /**
+         * Creates a Movie object from a JSON string returned by a call to TMDB API. Used for
+         * creating Movies to populate the favorites list.
+         * @param favoriteMoviesJsonStr JSON string from TMDB API
+         * @return A fully formed Movie object including trailers and reviews
+         * @throws JSONException
+         */
+        private Movie getFavoriteMovieDataFromJSON(String favoriteMoviesJsonStr) throws JSONException {
+            JSONObject favoriteMoviesJSON = new JSONObject(favoriteMoviesJsonStr);
+            long movieId = favoriteMoviesJSON.getLong("id");
+            String overview  = favoriteMoviesJSON.getString("overview");
+            String releaseDate = favoriteMoviesJSON.getString("release_date");
+            String posterPath = favoriteMoviesJSON.getString("poster_path");
+            String title = favoriteMoviesJSON.getString("title");
+            float voteAverage = (float)favoriteMoviesJSON.getDouble("vote_average");
+
+            Movie movie = new Movie(movieId, overview, releaseDate, posterPath, title, voteAverage);
+            // Get trailers for the movie
+            JSONObject trailersObject = favoriteMoviesJSON.getJSONObject("trailers");
+            JSONArray trailersArray = trailersObject.getJSONArray("youtube");
+            String[] trailers = new String[trailersArray.length()];
+            for (int i = 0; i < trailersArray.length(); i++) {
+                trailers[i] = trailersArray.getJSONObject(i).getString("source");
+            }
+
+            movie.setTrailers(trailers);
+
+            // Get reviews for the movie
+            JSONObject reviewsObject = favoriteMoviesJSON.getJSONObject("reviews");
+            JSONArray reviewsArray = reviewsObject.getJSONArray("results");
+            String[] reviews = new String[reviewsArray.length()];
+            for (int i = 0; i < reviewsArray.length(); i++) {
+                // We'll figure out how to get the author another time
+                //reviewsArray.getJSONObject(i).getString("author");
+                reviews[i] = reviewsArray.getJSONObject(i).getString("content");
+            }
+
+            movie.setReviews(reviews);
+
+            return movie;
         }
 
         @Override
@@ -258,6 +405,12 @@ public class FragmentMain extends Fragment {
             return movies;
         }
 
+        /**
+         * Calls TMDB API to get Trailer and Review information to add to a Movie object. Requires
+         * movie ID in order to execute call properly
+         * @param movie object to get trailers and reviews. Must have valid movie ID
+         * @return Fully formed Movie object with trailers and reviews
+         */
         private Movie getTrailersAndReviews(Movie movie) {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
