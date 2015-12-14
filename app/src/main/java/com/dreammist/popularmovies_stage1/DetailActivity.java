@@ -1,21 +1,28 @@
 package com.dreammist.popularmovies_stage1;
 
+import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
@@ -23,6 +30,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -46,8 +55,10 @@ public class DetailActivity extends AppCompatActivity {
 
         public DetailFragment(){}
 
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
 
             View rootview = inflater.inflate(R.layout.fragment_detail,container, false);
 
@@ -57,16 +68,16 @@ public class DetailActivity extends AppCompatActivity {
             if (intent != null && intent.hasExtra("com.dreammist.popularmovies_stage1.Movie")) {
                 mMovie = intent.getParcelableExtra("com.dreammist.popularmovies_stage1.Movie");
 
-                // Title
+                /** Title **/
                 TextView title = (TextView) rootview.findViewById(R.id.movie_title);
                 title.setText(mMovie.title);
 
-                // Poster
+                /** Poster **/
                 String url = path + mMovie.getPosterPath();
                 View poster = rootview.findViewById(R.id.detail_movie_poster);
                 Picasso.with(container.getContext()).load(url).into((ImageView) poster);
 
-                // Year
+                /** Year **/
                 TextView year = (TextView) rootview.findViewById(R.id.movie_year);
                 String releaseDate = mMovie.releaseDate;
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -85,27 +96,62 @@ public class DetailActivity extends AppCompatActivity {
                 }
                 if (!releaseYearStr.isEmpty()) year.setText(releaseYearStr);
 
-                // Rating
+                /** Rating **/
                 RatingBar rating = (RatingBar) rootview.findViewById(R.id.ratingBar);
                 rating.setStepSize((float)0.01);
                 float ratingScaled = (mMovie.voteAverage*5)/10;
                 rating.setRating(ratingScaled);
 
                 LayerDrawable stars = (LayerDrawable) rating.getProgressDrawable();
-                stars.getDrawable(0).setColorFilter(Color.parseColor("#c5ae3b"), PorterDuff.Mode.SRC_ATOP);
-                stars.getDrawable(1).setColorFilter(Color.parseColor("#c5ae3b"), PorterDuff.Mode.SRC_ATOP);
-                stars.getDrawable(2).setColorFilter(Color.parseColor("#c5ae3b"), PorterDuff.Mode.SRC_ATOP);
+                stars.getDrawable(0).setColorFilter(Color.parseColor("#c5ae3b"),
+                        PorterDuff.Mode.SRC_ATOP);
+                stars.getDrawable(1).setColorFilter(Color.parseColor("#c5ae3b"),
+                        PorterDuff.Mode.SRC_ATOP);
+                stars.getDrawable(2).setColorFilter(Color.parseColor("#c5ae3b"),
+                        PorterDuff.Mode.SRC_ATOP);
 
-                // Description
+                /** Favorite Button **/
+                ToggleButton toggle = (ToggleButton) rootview.findViewById(R.id.toggle_favorite);
+
+                // Check previous state of favorite button
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                Set<String> favorites = sharedPref.getStringSet("favorites",
+                        new HashSet<String>());
+                if(favorites.contains(Long.toString(mMovie.movieId))) toggle.setChecked(true);
+                else toggle.setChecked(false);
+
+                // Handle clicking of Favorite Button
+                toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        Set<String> favorites = sharedPref.getStringSet("favorites",
+                                new HashSet<String>());
+                        SharedPreferences.Editor editor = sharedPref.edit();
+
+                        if (isChecked) {
+                            favorites.add(Long.toString(mMovie.movieId));
+                            editor.putStringSet("favorites", favorites);
+                            editor.commit();
+                        } else {
+                            Log.v(LOG_TAG, "Favorite Unchecked");
+                            favorites.remove(Long.toString(mMovie.movieId));
+                            editor.putStringSet("favorites", favorites);
+                            editor.commit();
+                        }
+                    }
+                });
+
+                /** Description **/
                 TextView description = (TextView) rootview.findViewById(R.id.movie_description);
                 String overViewText = mMovie.overview;
-                if(overViewText.equalsIgnoreCase("null")) overViewText = getString(R.string.no_overview);
+                if(overViewText.equalsIgnoreCase("null")) overViewText =
+                        getString(R.string.no_overview);
 
                 description.setText(overViewText);
 
-                LinearLayout detailLayout = (LinearLayout)rootview.findViewById(R.id.detail_layout);
-
-                // Trailer(s)
+                /** Trailer(s) **/
+                // Currently hardcoded to only show 2 trailers
                 if(mMovie.getTrailers() != null && !mMovie.getTrailers()[0].isEmpty()) {
                     String[] trailers = mMovie.getTrailers();
 
@@ -160,7 +206,8 @@ public class DetailActivity extends AppCompatActivity {
                     trailer2.setVisibility(View.GONE);
                 }
 
-                // Review(s)
+                /** Review(s) **/
+                // Currently hardcoded to only show 2 reviews
                 if(mMovie.getReviews() != null) {
                     String[] reviews = mMovie.getReviews();
                     TextView review1 = (TextView) rootview.findViewById(R.id.review1);
