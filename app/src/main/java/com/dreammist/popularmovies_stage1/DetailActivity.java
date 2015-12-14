@@ -152,8 +152,8 @@ public class DetailActivity extends AppCompatActivity {
 
                 /** Trailer(s) **/
                 // Currently hardcoded to only show 2 trailers
-                if(mMovie.getTrailers() != null && !mMovie.getTrailers()[0].isEmpty()) {
-                    String[] trailers = mMovie.getTrailers();
+                String[] trailers = mMovie.getTrailers();
+                if(trailers != null && trailers.length>0) {
 
                     ImageView trailer1 = (ImageView) rootview.findViewById(R.id.play_icon1);
                     trailer1.setOnClickListener(new View.OnClickListener() {
