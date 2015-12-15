@@ -41,9 +41,20 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
         if (savedInstanceState == null) {
+
+            // Create the detail fragment and add it to the activity
+            // using a fragment transaction.
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(DetailFragment.DETAIL_MOVIE,
+                    getIntent().getParcelableExtra("com.dreammist.popularmovies_stage1.Movie"));
+
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(arguments);
+
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.detail_container, new DetailFragment())
+                    .add(R.id.detail_container, fragment)
                     .commit();
         }
     }
@@ -51,6 +62,7 @@ public class DetailActivity extends AppCompatActivity {
     public static class DetailFragment extends Fragment {
 
         public Movie mMovie;
+        static final String DETAIL_MOVIE = "movie";
 
         public DetailFragment(){}
 
@@ -62,10 +74,10 @@ public class DetailActivity extends AppCompatActivity {
             View rootview = inflater.inflate(R.layout.fragment_detail,container, false);
 
             final String path = "http://image.tmdb.org/t/p/w185/";
-            Intent intent = getActivity().getIntent();
+            Bundle arguments = getArguments();
 
-            if (intent != null && intent.hasExtra("com.dreammist.popularmovies_stage1.Movie")) {
-                mMovie = intent.getParcelableExtra("com.dreammist.popularmovies_stage1.Movie");
+            if (arguments != null) {
+                mMovie = arguments.getParcelable(DetailFragment.DETAIL_MOVIE);
 
                 /** Title **/
                 TextView title = (TextView) rootview.findViewById(R.id.movie_title);

@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -41,6 +40,18 @@ public class FragmentMain extends Fragment {
     ImageAdapter mPosterAdapter;
     final String[] mSortPreferences = {"popularity.desc","vote_average.desc","favorites"};
     AlertDialog mSortDialog;
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Movie movie);
+    }
 
     public FragmentMain() {}
 
@@ -95,7 +106,7 @@ public class FragmentMain extends Fragment {
     /**
      * Calls the movie API and updates the list of movies. Can be called anywhere safely.
      */
-    private void updateMovies(){
+    public void updateMovies(){
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
 
         // Get the sort order set by the user by getting the SharedPreferences
@@ -123,9 +134,7 @@ public class FragmentMain extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Movie movie = (Movie) mPosterAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("com.dreammist.popularmovies_stage1.Movie", movie);
-                startActivity(intent);
+                ((Callback) getActivity()).onItemSelected(movie);
             }
         });
 
